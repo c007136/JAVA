@@ -19,7 +19,7 @@ enum Input {
       throw new RuntimeException("SHUT_DOWN.amount()");
     }
   };
-  
+
   int value; // In cents
   Input(int value) { this.value = value; }
   Input() {}
@@ -34,11 +34,7 @@ enum Input {
 
 public class Demo {
 	public static void main(String[] args) {
-		for (Mail mail : Mail.generator(2)) {
-			System.out.println(mail.details());
-			PostOffice.handle(mail);
-			System.out.println("-----------");
-		}
+		
 	}
 }
 
