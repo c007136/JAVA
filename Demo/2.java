@@ -3,80 +3,15 @@ import java.util.concurrent.locks.*;
 import java.util.concurrent.atomic.*;
 import java.util.*;
 
-class Pair {
-	private int x;
-	private int y;
-
-	public Pair(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	public Pair() {
-		this(0, 0);
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void incrementX() {
-		x++;
-	}
-
-	public void incrementY() {
-		y++;
-	}
-
-	public String toString() {
-		return "x: " + x + ", y: " + y;
-	}
-
-	public void checkState() {
-		if (x != y) {
-			throw new PairValuesNotEqualException();
-		}
-	}
-
-	public class PairValuesNotEqualException extends RuntimeException {
-		public PairValuesNotEqualException() {
-			super("Pair values not equal: " + Pair.this);
-		}
-	}
-}
-
-abstract class PairManager {
-	AtomicInteger checkCounter = new AtomicInteger(0);
-
-	protected Pair p = new Pair();
-
-	private List<Pair> storage = Collections.synchronizedList(new ArrayList<Pair>());
-
-	public synchronized Pair getPair() {
-		return new Pair(p.getX(), p.getY());
-	}
-
-	protected void store(Pair p) {
-		storage.add(p);
-
-		try {
-			TimeUnit.MILLISECONDS.sleep(50);
-		} catch (InterruptedException e) {
-
-		}
-	}
-
-	public abstract void increment();
-}
-
+// ReentrantLock整体开销会比synchronized小很多
 class ExplicitPairManager1 extends PairManager {
 	private Lock lock = new ReentrantLock();
 
-	public synchronized void increment() {
+	public void increment() {
+		// p.incrementX();
+		// p.incrementY();
+		// store(getPair());
+
 		lock.lock();
 		try {
 			p.incrementX();
@@ -119,16 +54,18 @@ public class Demo {
 		es.execute(pm1);
 		es.execute(pm2);
 		es.execute(pc1);
-		es.execute(pc2);
+		//es.execute(pc2);
 
-		//es.shutdown();
+		es.shutdown();
 
 		try {
-			TimeUnit.MILLISECONDS.sleep(500);
+			TimeUnit.MILLISECONDS.sleep(100);
 		} catch (InterruptedException e) {
-			System.out.println("pm1: " + pm1 + "\npm2: " + pm2);
-			System.exit(0);
+			System.out.println("sleep interrupted");
 		}
+
+		System.out.println("pm1: " + pm1 + "\npm2: " + pm2);
+		System.exit(0);
 	}
 
 

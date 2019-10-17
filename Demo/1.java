@@ -81,6 +81,7 @@ class PairManager1 extends PairManager {
 }
 
 class PairManager2 extends PairManager {
+	// 同步代码块会比同步整个方法运行得多一些
 	public void increment() {
 		Pair temp;
 		synchronized (this) {
@@ -110,6 +111,7 @@ class PairManipulator implements Runnable {
 	}
 }
 
+// 跟踪运行测试的频度
 class PairChecker implements Runnable {
 	private PairManager pm;
 
@@ -141,14 +143,16 @@ public class Demo {
 		es.execute(pc1);
 		es.execute(pc2);
 
-		//es.shutdown();
+		es.shutdown();
 
 		try {
-			TimeUnit.MILLISECONDS.sleep(500);
+			TimeUnit.MILLISECONDS.sleep(100);
 		} catch (InterruptedException e) {
-			System.out.println("pm1: " + pm1 + "\npm2: " + pm2);
-			System.exit(0);
+			System.out.println("sleep interrupted");
 		}
+
+		System.out.println("pm1: " + pm1 + "\npm2: " + pm2);
+		System.exit(0);
 	}
 
 
@@ -161,17 +165,6 @@ public class Demo {
 
 
 /*
+pm1: Pair: x: 200, y: 200 checkCounter = 56
+pm2: Pair: x: 201, y: 201 checkCounter = 669459870
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
