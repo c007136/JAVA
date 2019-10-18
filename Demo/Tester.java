@@ -67,7 +67,7 @@ public abstract class Tester<C> {
 		}
 	}
 
-	public static void intMain(String[] args) {
+	public static void initMain(String[] args) {
 	    if(args.length > 0)
 			testReps = new Integer(args[0]);
 		if(args.length > 1)
